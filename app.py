@@ -6,7 +6,7 @@ from config import CATEGORIES, MARKETS
 from ranking import classify, curate
 from dotenv import load_dotenv
 load_dotenv()
-st.set_page_config(page_title='Aanya Trend Hunter | Culture Radar',page_icon='✦',layout='wide',initial_sidebar_state='expanded')
+st.set_page_config(page_title='Trend Hunter | Culture Radar',page_icon='✦',layout='wide',initial_sidebar_state='expanded')
 st.markdown('''<style>
 .stApp{background:radial-gradient(ellipse at 85% 0%,#163c65 0%,transparent 43%),radial-gradient(ellipse at 4% 75%,#0d3557 0%,transparent 40%),#06101e;color:#eaf4ff}
 [data-testid="stSidebar"]{background:linear-gradient(160deg,#102c4b,#081626);border-right:1px solid #4e789955}
@@ -20,7 +20,7 @@ h1,h2,h3{letter-spacing:-.035em}h1{color:#f2d7a2!important}
 PUBLIC=os.getenv('PUBLIC_MODE','false').lower()=='true'
 admin_key=os.getenv('ADMIN_KEY','')
 with st.sidebar:
-    st.markdown('### ✦ AANYA / CONTROL ROOM')
+    st.markdown('### ✦ TREND HUNTER / CONTROL ROOM')
     page=st.radio('Navigate',['✦ Discover','▥ Trend signals','♡ Saved archive','◎ Instagram references','⚙ Sources'])
     market=st.selectbox('Market',['All','India','Germany','Global'])
     niche=st.selectbox('Niche',['All']+list(CATEGORIES))
@@ -33,7 +33,7 @@ with st.sidebar:
         can_edit=bool(admin_key and typed==admin_key)
     if not PUBLIC:st.caption('Local editing mode')
 
-st.title('✦ AANYA / TREND HUNTER')
+st.title('✦ TREND HUNTER')
 st.caption('GEN Z CULTURE RADAR   /   BLUE + GOLD EDITION   /   YOUTUBE SIGNALS + INSTAGRAM REFERENCES')
 with connect() as db:
     rows=[dict(r) for r in db.execute('''SELECT v.video_id,v.title,v.channel,v.url,v.published_at,v.duration_seconds,o.market,o.category,o.views,o.likes,o.comments,o.observed_at FROM observations o JOIN videos v ON v.video_id=o.video_id ORDER BY o.observed_at DESC''')]

@@ -1,0 +1,45 @@
+
+name: Aanya Trend Hunter - Daily Collection
+
+on:
+  workflow_dispatch:
+
+  schedule:
+    - cron: "0 7,19 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aanya-trend-collection
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Collect YouTube trends
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        run: |
+          HOUR=$(TZ=Europe/Berlin date +%H)
+          if [ "$HOUR" -lt 14 ]; then
+            python collect.py --batch morning
+          else
+            python collect.py --batch evening
+          fi

@@ -23,7 +23,7 @@ def main():
                     conn.execute('INSERT OR IGNORE INTO observations VALUES(?,?,?,?,?,?,?)',(v['video_id'],market,category,now,v['views'],v['likes'],v['comments']))
             total+=len(rows);print(f'{market} / {category}: {len(rows)} relevant candidates')
         except Exception as exc:
-            print(f'ERROR {market} / {category}: {exc}')
+            print(f'ERROR {market} / {category}: {type(exc).__name__} (check API logs and credentials privately)')
             if any(x in str(exc).lower() for x in ('api key not valid','keyinvalid','accessnotconfigured','quotaexceeded','dailylimitexceeded','api_key_invalid','permission_denied')):
                 print('Stopping batch because the API configuration or quota needs attention.')
                 break

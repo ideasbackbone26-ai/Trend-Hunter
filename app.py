@@ -94,7 +94,7 @@ elif page=='♡ Saved archive':
     st.subheader('Your inspiration vault')
     # Saved videos should be visible regardless of current market, niche, or minimum views.
     with connect() as db:
-        archive=[dict(r) for r in db.execute('''SELECT v.video_id,v.title,v.channel,v.url,v.published_at,v.duration_seconds,COALESCE(MAX(o.views),0) views,MAX(o.market) market,MAX(o.category) category FROM saved s JOIN videos v ON s.video_id=v.video_id LEFT JOIN observations o ON o.video_id=v.video_id GROUP BY v.video_id ORDER BY s.saved_at DESC''')]
+        archive=[dict(r) for r in db.execute('''SELECT v.video_id,v.title,v.channel,v.url,v.published_at,v.duration_seconds,COALESCE(MAX(o.views),0) views,MAX(o.market) market,MAX(o.category) category FROM saved s JOIN videos v ON s.video_id=v.video_id LEFT JOIN observations o ON o.video_id=v.video_id GROUP BY v.video_id,s.saved_at ORDER BY s.saved_at DESC''')]
     archive_df=pd.DataFrame(archive)
     if archive_df.empty:st.info('No saved videos yet.')
     else:
@@ -123,6 +123,6 @@ elif page=='◎ Instagram references':
 else:
     st.subheader('Collection & deployment')
     st.write('YouTube: API-key collection. Instagram: manually curated references (no unrestricted API trend feed).')
-    st.write('Local SQLite saves are persistent on your laptop, but NOT on ephemeral public hosting.')
-    st.warning('Do not deploy this SQLite version as a shared persistent archive. Phase 2 migrates saves and observations to hosted storage.')
+    st.write('Storage: Supabase PostgreSQL when SUPABASE_DB_URL is set; otherwise local SQLite.')
+    st.warning('For public hosting, set PUBLIC_MODE=true and configure ADMIN_KEY privately. Use Supabase for persistent shared storage.')
     st.code('python collect.py --batch morning\npython collect.py --batch evening\nstreamlit run app.py')
